@@ -2,6 +2,7 @@
   "name": "Dublin 15 Door2Airport Taxi",
   "short_name": "Door2Airport",
   "description": "Book reliable airport taxi transfers from Dublin 15 and Dunboyne.",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
