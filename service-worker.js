@@ -1,4 +1,4 @@
-const CACHE='door2airport-v7';
+const CACHE='door2airport-v11';
 const ASSETS=['/','/index.html','/styles.css','/script.js','/manifest.webmanifest','/assets/logo.svg','/assets/favicon.svg','/assets/app-icon.svg','/assets/app-icon-192-v2.png','/assets/app-icon-512-v2.png','/assets/apple-touch-icon-v2.png','/assets/hero-van.png','/assets/jerry-walsh-driver.jpg','/assets/whatsapp.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
