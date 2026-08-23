@@ -48,12 +48,19 @@ module.exports = async function bookingHandler(request, response) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Accept: 'application/json'
+        Accept: 'application/json',
+        Origin: 'https://www.dublin15door2airporttaxi.ie',
+        Referer: 'https://www.dublin15door2airporttaxi.ie/'
       },
       body: JSON.stringify(emailPayload)
     });
 
     if (!emailResponse.ok) {
+      return response.status(502).json({ ok: false });
+    }
+
+    const emailResult = await emailResponse.json().catch(() => null);
+    if (!emailResult || String(emailResult.success) !== 'true') {
       return response.status(502).json({ ok: false });
     }
 
