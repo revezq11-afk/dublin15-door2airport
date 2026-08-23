@@ -16,19 +16,45 @@ nav.querySelectorAll('a').forEach((link) => {
 
 const bookingForm = document.getElementById('booking-form');
 const bookingStatus = document.getElementById('booking-status');
+const bookingStatusText = document.getElementById('booking-status-text');
 const bookingFallback = document.getElementById('booking-whatsapp-fallback');
 
 bookingForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const details = new FormData(bookingForm);
+  if (details.get('_honey')) return;
+
   const message = `Hi Dublin 15 Door2Airport, I'd like a taxi quote.\n\nName: ${details.get('name')}\nPhone: ${details.get('phone')}\nPickup: ${details.get('pickup')}\nDrop off: ${details.get('destination')}\nDate: ${details.get('date')}\nTime: ${details.get('time')}\nPassengers: ${details.get('passengers')}`;
   const whatsappUrl = `https://wa.me/353858122981?text=${encodeURIComponent(message)}`;
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isHomeScreenApp = navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
 
   bookingFallback.href = whatsappUrl;
+  bookingStatusText.textContent = "Your booking details are being copied to Jerry's email. WhatsApp should open next.";
   bookingStatus.hidden = false;
+
+  // Send Jerry an email copy in the background. `keepalive` lets the request
+  // finish after iPhone Safari hands the customer over to WhatsApp.
+  fetch('/api/booking', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    keepalive: true,
+    body: JSON.stringify({
+      name: details.get('name'),
+      phone: details.get('phone'),
+      pickup: details.get('pickup'),
+      destination: details.get('destination'),
+      date: details.get('date'),
+      time: details.get('time'),
+      passengers: details.get('passengers'),
+      _honey: details.get('_honey')
+    })
+  }).catch(() => {
+    // WhatsApp remains the primary booking handoff if email delivery is ever unavailable.
+  });
 
   // A direct same-window navigation reliably hands the message to WhatsApp on
   // iPhone, including when the website was saved to the Home Screen.
