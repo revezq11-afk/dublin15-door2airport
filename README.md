@@ -1,10 +1,10 @@
 # Dublin 15 Door2Airport
 
-Static, mobile-responsive website ready for GitHub Pages or Vercel.
+Static, mobile-responsive website ready for GitHub and Vercel.
 
 ## Deploy to Vercel
 
-Upload all files and the complete `assets` folder to the repository root. In Vercel, use **Other** as the framework preset and leave the build command empty.
+Upload every file plus the complete `assets` and `api` folders to the repository root. The `api` folder must sit beside `index.html`; it sends booking copies to email. In Vercel, use **Other** as the framework preset and leave the build command empty.
 
 ## Edit contact details
 
