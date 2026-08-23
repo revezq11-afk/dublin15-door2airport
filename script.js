@@ -34,24 +34,31 @@ bookingForm.addEventListener('submit', (event) => {
   bookingStatusText.textContent = "Your booking details are being copied to Jerry's email. WhatsApp should open next.";
   bookingStatus.hidden = false;
 
-  // Send Jerry an email copy in the background. `keepalive` lets the request
-  // finish after iPhone Safari hands the customer over to WhatsApp.
-  fetch('/api/booking', {
+  const emailDetails = new URLSearchParams({
+    _subject: 'New Door2Airport booking request',
+    _template: 'table',
+    _url: 'https://www.dublin15door2airporttaxi.ie/',
+    Name: details.get('name'),
+    Phone: details.get('phone'),
+    'Pickup address': details.get('pickup'),
+    'Drop-off airport': details.get('destination'),
+    Date: details.get('date'),
+    Time: details.get('time'),
+    Passengers: details.get('passengers') || 'Not specified'
+  });
+
+  // FormSubmit accepts the approved booking copy directly from the public
+  // website. This simple keepalive request can finish while iPhone Safari
+  // hands the customer over to WhatsApp.
+  fetch('https://formsubmit.co/ajax/portrow11@gmail.com', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      Accept: 'application/json'
     },
     keepalive: true,
-    body: JSON.stringify({
-      name: details.get('name'),
-      phone: details.get('phone'),
-      pickup: details.get('pickup'),
-      destination: details.get('destination'),
-      date: details.get('date'),
-      time: details.get('time'),
-      passengers: details.get('passengers'),
-      _honey: details.get('_honey')
-    })
+    mode: 'cors',
+    credentials: 'omit',
+    body: emailDetails
   }).catch(() => {
     // WhatsApp remains the primary booking handoff if email delivery is ever unavailable.
   });
